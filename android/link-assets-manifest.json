@@ -1,0 +1,77 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/CircularStd-Black.otf",
+      "sha1": "c3151c999f79358f3a091222ebefcd4d436cbe8e"
+    },
+    {
+      "path": "src/assets/fonts/CircularStd-BlackItalic.otf",
+      "sha1": "2e263d71f8fcbd12f3a02e7c01df6a865f68acce"
+    },
+    {
+      "path": "src/assets/fonts/CircularStd-Bold.otf",
+      "sha1": "2a36de6df85e4da5c22d26a427fd7390ad32840f"
+    },
+    {
+      "path": "src/assets/fonts/CircularStd-BoldItalic.otf",
+      "sha1": "1496c0d9ea9622abc43231fbc83bf08099053926"
+    },
+    {
+      "path": "src/assets/fonts/CircularStd-Book.otf",
+      "sha1": "a67856765459bf64a0a1259b6621613edd717ff9"
+    },
+    {
+      "path": "src/assets/fonts/CircularStd-BookItalic.otf",
+      "sha1": "6ba07b4856b40f621a080196730051ee4d921ae8"
+    },
+    {
+      "path": "src/assets/fonts/CircularStd-Light Italic.otf",
+      "sha1": "54dfa5f8744b0e5ab860e10a6d2f221b341694d1"
+    },
+    {
+      "path": "src/assets/fonts/CircularStd-Light.otf",
+      "sha1": "4131b07a036089f0542a451f0e4193338dc4d4b5"
+    },
+    {
+      "path": "src/assets/fonts/CircularStd-Medium.otf",
+      "sha1": "29b0a9af2e480ffb9d45de38a44f1c21a002adc9"
+    },
+    {
+      "path": "src/assets/fonts/CircularStd-MediumItalic.otf",
+      "sha1": "fdce946f1649c046388806513c4eed1c45852da2"
+    },
+    {
+      "path": "src/assets/fonts/PlusJakartaSans-Bold.ttf",
+      "sha1": "65d200b5d71c1eb13a4adc781bf1736f9023e7d1"
+    },
+    {
+      "path": "src/assets/fonts/PlusJakartaSans-ExtraBold.ttf",
+      "sha1": "ae3e020c0aa18846f2e00061fadb354e4d4ede1d"
+    },
+    {
+      "path": "src/assets/fonts/PlusJakartaSans-ExtraLight.ttf",
+      "sha1": "dfc917207ff3f235abe957fc54d02c0c651bb1b3"
+    },
+    {
+      "path": "src/assets/fonts/PlusJakartaSans-Light.ttf",
+      "sha1": "bac18663bde6c31b5ebed0350c72a52eaa21364e"
+    },
+    {
+      "path": "src/assets/fonts/PlusJakartaSans-Medium.ttf",
+      "sha1": "d9f2b21bd07ae873b2696ae985cdff528fa1c6ec"
+    },
+    {
+      "path": "src/assets/fonts/PlusJakartaSans-Regular.ttf",
+      "sha1": "535033c2b4eb50644357745f7ebeb5e1381428d9"
+    },
+    {
+      "path": "src/assets/fonts/PlusJakartaSans-SemiBold.ttf",
+      "sha1": "0de275ba9332fd64d48a9b481866d4f8c37c3d2a"
+    },
+    {
+      "path": "src/assets/fonts/sofiapro-light.otf",
+      "sha1": "5bb36b9218ece13431f76663d000433a9b37cba1"
+    }
+  ]
+}
