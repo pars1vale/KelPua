@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity, ScrollView, _View } from 'react-native';
 import { fontType, colors } from './src/theme';
+import { ListBlog, MostPopular } from './src/components';
 
 export default function App() {
   return (
@@ -13,9 +14,10 @@ export default function App() {
           <CategoryItem title="New" />
           <CategoryItem title="Nearby" />
           <CategoryItem title="Nearest" />
-          <CategoryItem title="Recommendation" />
+          <CategoryItem title="    Recommendation" />
         </ScrollView>
-        <ListBlog />
+        <ListBlog data={blogData} />
+        {/* <ListBlog /> */}
         <MostPopular />
         <CardPopular />
       </ScrollView>
@@ -34,7 +36,6 @@ const Header = () => {
     </View>
   );
 };
-
 
 const SearchBar = () => {
   return (
@@ -62,56 +63,60 @@ const CategoryItem = ({ title }) => {
   );
 };
 
-const ListBlog = () => {
-  const blogData = [
-    {
-      title: 'Raja Ampat',
-      description: 'the wayag islands, raja ampat, west papua, indonesia',
-      image: require('./src/assets/images/gambar1.jpg'),
-    },
-    {
-      title: 'Sentani Lake',
-      description: 'the wayag islands, raja ampat, west papua, indonesia',
-      image: require('./src/assets/images/gambar2.jpg'),
-    },
-    {
-      title: 'Beach Base-G',
-      description: 'the wayag islands, raja ampat, west papua, indonesia',
-      image: require('./src/assets/images/gambar3.jpg'),
-    },
-    {
-      title: 'Lorentz National Park',
-      description: 'the wayag islands, raja ampat, west papua, indonesia',
-      image: require('./src/assets/images/gambar4.jpg'),
-    },
-  ];
+//PROPS
+// const ListBlog = () => {
+const blogData = [
+  {
+    title: 'Raja Ampat',
+    description: 'the wayag islands, raja ampat, west papua, indonesia',
+    image: require('./src/assets/images/gambar1.jpg'),
+    iconLike: require('../KelPua/src/assets/images/iconLike.png'),
+  },
+  {
+    title: 'Sentani Lake',
+    description: 'the wayag islands, raja ampat, west papua, indonesia',
+    image: require('./src/assets/images/gambar2.jpg'),
+    iconLike: require('../KelPua/src/assets/images/iconLike.png'),
+  },
+  {
+    title: 'Beach Base-G',
+    description: 'the wayag islands, raja ampat, west papua, indonesia',
+    image: require('./src/assets/images/gambar3.jpg'),
+    iconLike: require('../KelPua/src/assets/images/iconLike.png'),
+  },
+  {
+    title: 'Lorentz National Park',
+    description: 'the wayag islands, raja ampat, west papua, indonesia',
+    image: require('./src/assets/images/gambar4.jpg'),
+    iconLike: require('../KelPua/src/assets/images/iconLike.png'),
+  },
+];
 
-  return (
-    <View>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {blogData.map((item, index) => (
-          <View key={index} style={styles.cardContainer}>
-            <Image source={item.image} style={styles.cardImage} />
-            <Text style={styles.cardTitle}>{item.title}</Text>
-            <Text style={styles.cardDescription}>{item.description}</Text>
-          </View>
-        ))}
-      </ScrollView>
-    </View>
+// return (
+//   <View>
+//     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+//       {blogData.map((item, index) => (
+//         <View key={index} style={styles.cardContainer}>
+//           <Image source={item.image} style={styles.cardImage} />
+//           <Text style={styles.cardTitle}>{item.title}</Text>
+//           <Text style={styles.cardDescription}>{item.description}</Text>
+//         </View>
+//       ))}
+//     </ScrollView>
+//   </View>
+// );
+// };
 
-  );
-};
-
-const MostPopular = () => {
-  return (
-    <View style={styles.containerMostPopular}>
-      <Text style={styles.titleMostPopular}>Most Popular</Text>
-      <TouchableOpacity>
-        <Text style={styles.viewAllMostPopular}>View All</Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
+// const MostPopular = () => {
+//   return (
+//     <View style={styles.containerMostPopular}>
+//       <Text style={styles.titleMostPopular}>Most Popular</Text>
+//       <TouchableOpacity>
+//         <Text style={styles.viewAllMostPopular}>View All</Text>
+//       </TouchableOpacity>
+//     </View>
+//   );
+// };
 
 const CardPopular = () => {
   const blogData = [
@@ -124,19 +129,19 @@ const CardPopular = () => {
     {
       title: 'Sentani Lake',
       location: 'Sentani, Papua',
-      rating: 4.7,
+      rating: 4.4,
       image: require('./src/assets/images/gambar2.jpg'),
     },
     {
       title: 'Beach Base-G ',
       location: 'Jayapura, Papua',
-      rating: 4.7,
+      rating: 4.2,
       image: require('./src/assets/images/gambar3.jpg'),
     },
     {
       title: 'Lorentz National Park',
       location: 'Timika, Papua',
-      rating: 4.7,
+      rating: 4.8,
       image: require('./src/assets/images/gambar4.jpg'),
     },
   ];
