@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { fontType, colors } from '../theme';
 
-function MostPopular() {
-    const [isViewAllClicked, setIsViewAllClicked] = useState(false);
-
+function MostPopular({ isViewAllClicked, toggleViewAll }) {
     return (
         <View style={styles.containerMostPopular}>
             <Text style={styles.titleMostPopular}>Most Popular</Text>
-            <TouchableOpacity onPress={() => setIsViewAllClicked(!isViewAllClicked)}>
+            <TouchableOpacity onPress={toggleViewAll}>
                 <Text style={styles.viewAllMostPopular}>View All</Text>
             </TouchableOpacity>
             {isViewAllClicked && (
@@ -18,10 +16,9 @@ function MostPopular() {
     );
 }
 
-
 const styles = StyleSheet.create({
     containerMostPopular: {
-        marginTop: 5, // Tambahkan margin atas di sini
+        marginTop: 5,
         marginLeft: 10,
         marginRight: 10,
         flexDirection: 'row',
@@ -36,7 +33,7 @@ const styles = StyleSheet.create({
     },
     viewAllMostPopular: {
         fontSize: 16,
-        color: 'blue', // Ganti dengan warna yang diinginkan
+        color: 'blue',
     },
 });
 
