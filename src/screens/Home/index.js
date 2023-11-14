@@ -1,7 +1,11 @@
 import React from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
 import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity, ScrollView, _View } from 'react-native';
 import { fontType, colors } from '../../../src/theme';
-import { ListBlog, MostPopular } from '../../../src/components';
+import { blogData } from '../../../data';
+import { DestinationList, MostPopular } from '../../../src/components';
+
+const Stack = createStackNavigator();
 
 export default function Home() {
     return (
@@ -16,8 +20,7 @@ export default function Home() {
                     <CategoryItem title="Nearest" />
                     <CategoryItem title="Recommendation" />
                 </ScrollView>
-                <ListBlog data={blogData} />
-                {/* <ListBlog /> */}
+                <DestinationList data={blogData} />
                 <MostPopular />
                 <CardPopular />
             </ScrollView>
@@ -41,7 +44,6 @@ const SearchBar = () => {
     return (
         <View style={searchBar.searchBarContainer}>
             <View style={searchBar.searchIconContainer}>
-                {/* <Text style={searchBar.searchIcon}>🔍</Text> */}
                 <Image source={require('../../assets/images/iconSearch.png')} style={searchBar.searchIcon} />
             </View>
             <TextInput
@@ -63,67 +65,12 @@ const CategoryItem = ({ title }) => {
     );
 };
 
-//PROPS
-// const ListBlog = () => {
-const blogData = [
-    {
-        title: 'Raja Ampat',
-        description: 'the wayag islands, raja ampat, west papua, indonesia',
-        image: require('../../assets/images/gambar1.jpg'),
-        iconLike: require('../../assets/images/iconLike.png'),
-    },
-    {
-        title: 'Sentani Lake',
-        description: 'the wayag islands, raja ampat, west papua, indonesia',
-        image: require('../../assets/images/gambar2.jpg'),
-        iconLike: require('../../assets/images/iconLike.png'),
-    },
-    {
-        title: 'Beach Base-G',
-        description: 'the wayag islands, raja ampat, west papua, indonesia',
-        image: require('../../assets/images/gambar3.jpg'),
-        iconLike: require('../../assets/images/iconLike.png'),
-    },
-    {
-        title: 'Lorentz National Park',
-        description: 'the wayag islands, raja ampat, west papua, indonesia',
-        image: require('../../assets/images/gambar4.jpg'),
-        iconLike: require('../../assets/images/iconLike.png'),
-    },
-];
-
-// return (
-//   <View>
-//     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-//       {blogData.map((item, index) => (
-//         <View key={index} style={styles.cardContainer}>
-//           <Image source={item.image} style={styles.cardImage} />
-//           <Text style={styles.cardTitle}>{item.title}</Text>
-//           <Text style={styles.cardDescription}>{item.description}</Text>
-//         </View>
-//       ))}
-//     </ScrollView>
-//   </View>
-// );
-// };
-
-// const MostPopular = () => {
-//   return (
-//     <View style={styles.containerMostPopular}>
-//       <Text style={styles.titleMostPopular}>Most Popular</Text>
-//       <TouchableOpacity>
-//         <Text style={styles.viewAllMostPopular}>View All</Text>
-//       </TouchableOpacity>
-//     </View>
-//   );
-// };
-
 const CardPopular = () => {
     const blogData = [
         {
             title: 'Raja Ampat',
             location: 'Raja Ampat, West Papua',
-            rating: 4.5,
+            rating: 5.0,
             image: require('../../assets/images/gambar1.jpg'),
         },
         {
@@ -140,9 +87,15 @@ const CardPopular = () => {
         },
         {
             title: 'Lorentz National Park',
-            location: 'Timika, Papua',
+            location: 'Timika, Center Papua',
             rating: 4.8,
             image: require('../../assets/images/gambar4.jpg'),
+        },
+        {
+            title: 'Uter Lake',
+            location: 'Korom, West Papua',
+            rating: 4.1,
+            image: require('../../assets/images/gambar5.jpg'),
         },
     ];
 
@@ -171,11 +124,11 @@ const Footer = () => {
                 <Image style={footer.image} source={require('../../assets/images/iconHouse.png')} />
             </View>
             <View style={footer.footerItem}>
-                <Image style={footer.image} source={require('../../assets/images/iconLikeNavbar.png')} />
+                <Image style={footer.image} source={require('../../assets/images/iconSearch2.png')} />
             </View>
 
             <View style={footer.footerItem}>
-                <Image style={footer.image} source={require('../../assets/images/iconSchedule.png')} />
+                <Image style={footer.image} source={require('../../assets/images/iconLikeNavbar.png')} />
             </View>
             <View style={footer.footerItem}>
                 <Image style={footer.image} source={require('../../assets/images/iconProfile.png')} />

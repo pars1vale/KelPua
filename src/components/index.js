@@ -1,4 +1,4 @@
-import ListBlog from './ListBlog'
+import DestinationList from './DestinationList'
 import MostPopular from './MostPopular'
 
-export { ListBlog, MostPopular }
+export { DestinationList, MostPopular }

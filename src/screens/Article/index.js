@@ -113,7 +113,7 @@ const CardPopular = () => {
         {
             title: 'Raja Ampat',
             location: 'Raja Ampat, West Papua',
-            rating: 4.5,
+            rating: 5.0,
             image: require('../../assets/images/gambar1.jpg'),
         },
         {
@@ -130,27 +130,27 @@ const CardPopular = () => {
         },
         {
             title: 'Lorentz National Park',
-            location: 'Timika, Papua',
+            location: 'Timika, Center Papua',
             rating: 4.8,
             image: require('../../assets/images/gambar4.jpg'),
         },
         {
+            title: 'Uter Lake',
+            location: 'Korom, West Papua',
+            rating: 4.1,
+            image: require('../../assets/images/gambar5.jpg'),
+        },
+        {
             title: 'Lorentz National Park',
-            location: 'Timika, Papua',
+            location: 'Timika, Center Papua',
             rating: 4.8,
             image: require('../../assets/images/gambar4.jpg'),
         },
         {
-            title: 'Lorentz National Park',
-            location: 'Timika, Papua',
-            rating: 4.8,
-            image: require('../../assets/images/gambar4.jpg'),
-        },
-        {
-            title: 'Lorentz National Park',
-            location: 'Timika, Papua',
-            rating: 4.8,
-            image: require('../../assets/images/gambar4.jpg'),
+            title: 'Uter Lake',
+            location: 'Korom, West Papua',
+            rating: 4.1,
+            image: require('../../assets/images/gambar5.jpg'),
         },
 
     ];
@@ -180,7 +180,7 @@ const Footer = () => {
                 <Image style={footer.image} source={require('../../assets/images/iconHouse.png')} />
             </View>
             <View style={footer.footerItem}>
-                <Image style={footer.image} source={require('../../assets/images/iconLikeNavbarFilled.png')} />
+                <Image style={footer.image} source={require('../../assets/images/iconLikeNavbar.png')} />
             </View>
 
             <View style={footer.footerItem}>

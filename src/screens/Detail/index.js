@@ -1,8 +1,11 @@
 import React from 'react';
 import { Text, View, Image, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { fontType, colors } from '../../../src/theme';
+import { useNavigation } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
 export default function Detail() {
+
     return (
         <View style={styles.container}>
             <Header />
@@ -12,15 +15,16 @@ export default function Detail() {
                 <Information />
                 <Description />
             </ScrollView>
-            <Footer />
+
         </View>
     );
 }
 
 const Header = () => {
+    const navigation = useNavigation();
     return (
         <View style={header.headerContainer}>
-            <TouchableOpacity style={header.iconContainer} activeOpacity={0.5} onPress={() => { }}>
+            <TouchableOpacity style={header.iconContainer} activeOpacity={0.5} onPress={() => { navigation.goBack() }}>
                 <Image
                     style={header.icon}
                     source={require('../../assets/images/previous.png')} // Gantilah dengan path gambar ikon "back"
@@ -106,25 +110,6 @@ const Description = () => {
     );
 }
 
-const Footer = () => {
-    return (
-        <View style={footer.footerContainer}>
-            <View style={footer.footerItem}>
-                <Image style={footer.image} source={require('../../assets/images/iconHouse.png')} />
-            </View>
-            <View style={footer.footerItem}>
-                <Image style={footer.image} source={require('../../assets/images/iconLikeNavbarFilled.png')} />
-            </View>
-
-            <View style={footer.footerItem}>
-                <Image style={footer.image} source={require('../../assets/images/iconSchedule.png')} />
-            </View>
-            <View style={footer.footerItem}>
-                <Image style={footer.image} source={require('../../assets/images/iconProfile.png')} />
-            </View>
-        </View>
-    );
-}
 
 const styles = StyleSheet.create({
     container: {
@@ -232,6 +217,7 @@ const description = StyleSheet.create({
         marginBottom: 10,
     },
     text: {
+        textAlign: 'justify',
         lineHeight: 26,
         fontSize: 16,
         fontFamily: fontType['CS-Book'],
@@ -239,33 +225,4 @@ const description = StyleSheet.create({
     },
 });
 
-const footer = StyleSheet.create({
-    footerContainer: {
-        height: 70,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: 25,
-        backgroundColor: colors.white(),
-        // borderTopLeftRadius: 15,
-        // borderTopRightRadius: 15,
-        elevation: 5, // Tambahkan elevation untuk shadow kontras di Android
-    },
-    footerItem: {
-        flexDirection: 'column',
-        alignItems: 'center',
-    },
-    footerTitle: {
-        fontSize: 18,
-        fontFamily: fontType['CS-Book'],
-        color: colors.grey(),
-    },
-    image: {
-        marginLeft: 10,
-        marginRight: 10,
-        width: 30,
-        height: 30,
-        // borderRadius: 10,
-    }
-});
 
