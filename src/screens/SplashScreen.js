@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, Animated } from 'react-native';
 import { fontType, colors } from '../theme';
 import { StackActions } from '@react-navigation/native';
 

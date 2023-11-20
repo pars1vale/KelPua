@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { StyleSheet, Text, View, TextInput, Image, TouchableOpacity, ScrollView, _View } from 'react-native';
+import { Animated, StyleSheet, Text, View, TextInput, Image, TouchableOpacity, ScrollView, _View } from 'react-native';
 import { fontType, colors } from '../../../src/theme';
 import { blogData } from '../../../data';
 import { DestinationList, MostPopular } from '../../../src/components';
@@ -8,8 +8,33 @@ import { DestinationList, MostPopular } from '../../../src/components';
 const Stack = createStackNavigator();
 
 export default function Home() {
+    const translateX = useRef(new Animated.Value(0)).current;
+
+    const panResponder = useRef(
+        PanResponder.create({
+            onStartShouldSetPanResponder: () => true,
+            onPanResponderMove: (_, gestureState) => {
+                translateX.setValue(gestureState.dx);
+            },
+            onPanResponderRelease: (_, gestureState) => {
+                if (gestureState.dx < -50) {
+                    // Fungsi untuk menghapus item berdasarkan nilai threshold
+                    Animated.timing(translateX, {
+                        toValue: -300,
+                        duration: 200,
+                        useNativeDriver: false,
+                    }).start(() => onDelete());
+                } else {
+                    Animated.spring(translateX, {
+                        toValue: 0,
+                        useNativeDriver: false,
+                    }).start();
+                }
+            },
+        }),
+    ).current;
     return (
-        <View style={styles.container}>
+        <Animated.View style={styles.container}>
             <ScrollView>
                 <Header />
                 <SearchBar />
@@ -25,7 +50,7 @@ export default function Home() {
                 <CardPopular />
             </ScrollView>
             <Footer />
-        </View>
+        </Animated.View>
     );
 }
 

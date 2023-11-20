@@ -1,8 +1,8 @@
 import React from 'react';
 import { TextInput, Text, View, Image, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import { fontType, colors } from '../../../src/theme';
+import { fontType, colors } from '../../theme';
 
-export default function Detail() {
+export default function Search() {
     return (
         <View style={styles.container}>
             <Header />
