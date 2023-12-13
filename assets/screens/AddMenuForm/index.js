@@ -11,8 +11,10 @@ import { ArrowLeft2 } from 'iconsax-react-native';
 import { useNavigation } from '@react-navigation/native';
 import theme, { COLORS, SIZES, FONTS } from '../../constant';
 import { categories } from '../../constant';
+import axios from 'axios';
 
 const AddFoodForm = () => {
+  const [loading, setLoading] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [destinationData, setDestinationData] = useState({
     name: '',
@@ -51,6 +53,33 @@ const AddFoodForm = () => {
     }
   };
 
+  const handleUpload = async () => {
+    setLoading(true);
+    try {
+      await axios.post('https://6571dd06d61ba6fcc013cf5b.mockapi.io/kelpua/Destination', {
+        name: destinationData.name,
+        location: destinationData.location,
+        titleDetail: destinationData.titleDetail,
+        description: destinationData.description,
+        categories: destinationData.categories,
+        rating: destinationData.rating,
+        likes: destinationData.likes,
+        views: destinationData.views,
+        image,
+      })
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      setLoading(false);
+      navigation.navigate('Profile');
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -82,7 +111,7 @@ const AddFoodForm = () => {
           <TextInput
             placeholder="location"
             value={destinationData.location}
-            onChangeText={text => handleChange('description', text)}
+            onChangeText={text => handleChange('location', text)}
             placeholderTextColor={COLORS.gray2}
             multiline
             style={textInput.content}
@@ -93,7 +122,7 @@ const AddFoodForm = () => {
           <TextInput
             placeholder="Title Detail"
             value={destinationData.titleDetail}
-            onChangeText={text => handleChange('description', text)}
+            onChangeText={text => handleChange('titleDetail', text)}
             placeholderTextColor={COLORS.gray2}
             multiline
             style={textInput.content}
@@ -103,8 +132,8 @@ const AddFoodForm = () => {
         <View style={[textInput.borderDashed, { minHeight: 250 }]}>
           <TextInput
             placeholder="Description"
-            value={destinationData.comDescription}
-            onChangeText={text => handleChange('comDescription', text)}
+            value={destinationData.description}
+            onChangeText={text => handleChange('description', text)}
             placeholderTextColor={COLORS.gray2}
             multiline
             style={textInput.content}
@@ -126,7 +155,7 @@ const AddFoodForm = () => {
           <TextInput
             placeholder="Likes"
             value={destinationData.likes}
-            onChangeText={text => handleChange('price', text)}
+            onChangeText={text => handleChange('likes', text)}
             placeholderTextColor={COLORS.gray2}
             multiline
             style={textInput.content}
@@ -137,7 +166,7 @@ const AddFoodForm = () => {
           <TextInput
             placeholder="Views"
             value={destinationData.views}
-            onChangeText={text => handleChange('calories', text)}
+            onChangeText={text => handleChange('views', text)}
             placeholderTextColor={COLORS.gray2}
             multiline
             style={textInput.content}
@@ -189,7 +218,7 @@ const AddFoodForm = () => {
         </View>
       </ScrollView>
       <View style={styles.bottomBar}>
-        <TouchableOpacity style={styles.button} onPress={() => { }}>
+        <TouchableOpacity style={styles.button} onPress={handleUpload}>
           <Text style={styles.buttonLabel}>Add</Text>
         </TouchableOpacity>
       </View>

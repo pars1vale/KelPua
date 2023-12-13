@@ -2,7 +2,7 @@ import Homepage from './Home';
 import DestinationDetail from './DestinationDetail';
 import Order from './Order';
 import Favorite from './Favorite';
-import NotifScreen from './Notification';
+import Profile from './Profile';
 import Search from './Search';
 import AddFoodForm from './AddMenuForm';
 import EditDestinationForm from './EditDestinationForm';
@@ -12,7 +12,7 @@ export {
   DestinationDetail,
   Order,
   Favorite,
-  NotifScreen,
+  Profile,
   Search,
   AddFoodForm,
   EditDestinationForm,

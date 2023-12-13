@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, } from 'react';
 import {
   FlatList,
   Image,
@@ -10,8 +10,9 @@ import {
   TouchableWithoutFeedback,
   View,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import {
   HambergerMenu,
   Bill,
@@ -26,10 +27,12 @@ import {
 import theme, { COLORS, SIZES, FONTS } from '../../constant';
 import { categoryList, menuList } from '../../constant';
 import { destinationList } from '../../constant/dummyData';
+import axios from 'axios';
 
 
 export default function Homepage() {
   const navigation = useNavigation();
+
 
   return (
     <View style={styles.container}>
@@ -83,6 +86,34 @@ const SearchBar = () => {
 
 const Content = () => {
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(true);
+  const [destinationData, setDestinationData] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const getDataDestination = async () => {
+    try {
+      const response = await axios.get(
+        'https://6571dd06d61ba6fcc013cf5b.mockapi.io/kelpua/Destination',
+      );
+      setDestinationData(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      getDataDestination();
+      setRefreshing(false);
+    }, 1500);
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      getDataDestination();
+    }, []),
+  );
   return (
     <View>
 
@@ -90,10 +121,18 @@ const Content = () => {
         <FlatListCategory />
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}
+      // refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      >
         {destinationList.map(item => (
           <CardDestination key={item.id} item={item} />
         ))}
+
+        {loading ? (
+          <ActivityIndicator size={'large'} color={COLORS.primary} />
+        ) : (
+          destinationData.map((item, index) => <CardDestination item={item} key={index} />)
+        )}
       </ScrollView>
 
     </View>

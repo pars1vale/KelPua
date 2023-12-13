@@ -15,22 +15,21 @@ import { categories } from '../../constant';
 import axios from 'axios';
 
 const EditDestinationForm = ({ route }) => {
-    const { menuId } = route.params;
+    const { destiatnionId } = route.params;
     const [selectedCategories, setSelectedCategories] = useState([]);
-    const [menuData, setMenuData] = useState({
+    const [destinationData, setDestinationData] = useState({
         name: '',
+        location: '',
+        titleDetail: '',
         description: '',
-        comDescription: '',
-        categories: [],
+        categories: '',
         rating: '',
-        price: '',
-        calories: '',
-        duration: '',
-        isFavorite: false,
+        likes: '',
+        views: '',
     });
     const handleChange = (key, value) => {
-        setMenuData({
-            ...menuData,
+        setDestinationData({
+            ...destinationData,
             [key]: value,
         });
     };
@@ -38,27 +37,29 @@ const EditDestinationForm = ({ route }) => {
     const navigation = useNavigation();
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-        getMenuById();
-    }, [menuId]);
+        getDestinationById();
+    }, [destiatnionId]);
 
-    const getMenuById = async () => {
+    const getDestinationById = async () => {
         try {
             const response = await axios.get(
-                `https://65716495d61ba6fcc01261ec.mockapi.io/needtoeat/menuList/${menuId}`,
+                `https://6571dd06d61ba6fcc013cf5b.mockapi.io/kelpua/Destination/${destiatnionId}`,
             );
 
-            const menuCategories = response.data.categories || [];
+            const destinationCategories = response.data.categories || [];
 
-            setMenuData({
+            setDestinationData({
                 name: response.data.name,
+                location: response.dat.location,
+                titleDetail: response.data.titleDetail,
                 description: response.data.description,
-                comDescription: response.data.comDescription,
+                categories: response.data.categories,
                 rating: response.data.rating,
-                price: response.data.price,
-                calories: response.data.calories,
-                duration: response.data.duration,
+                likes: response.data.likes,
+                views: response.data.views,
+
             });
-            setSelectedCategories(menuCategories);
+            setSelectedCategories(destinationCategories);
             setImage(response.data.image);
             setLoading(false);
         } catch (error) {
@@ -71,17 +72,16 @@ const EditDestinationForm = ({ route }) => {
         try {
             await axios
                 .put(
-                    `https://65716495d61ba6fcc01261ec.mockapi.io/needtoeat/menuList/${menuId}`,
+                    `https://6571dd06d61ba6fcc013cf5b.mockapi.io/kelpua/Destination/${destiatnionId}`,
                     {
-                        name: menuData.name,
-                        description: menuData.description,
-                        comDescription: menuData.comDescription,
-                        categories: selectedCategories,
-                        rating: menuData.rating,
-                        price: menuData.price,
-                        calories: menuData.calories,
-                        duration: menuData.duration,
-                        isFavorite: menuData.isFavorite,
+                        name: destinationData.name,
+                        location: destinationData.location,
+                        titleDetail: destinationData.itleDetail,
+                        description: destinationData.description,
+                        categories: destinationData.categories,
+                        rating: destinationData.rating,
+                        likes: destinationData.likes,
+                        views: destinationData.views,
                         image,
                     },
                 )

@@ -6,9 +6,10 @@ import {
   Favorite,
   Order,
   DestinationDetail,
-  NotifScreen,
   Search,
+  Profile,
   AddFoodForm,
+  EditDestinationForm,
 } from '../screens';
 import { Home, SearchNormal, Heart, ProfileCircle } from 'iconsax-react-native';
 import theme, { COLORS } from '../constant';
@@ -80,8 +81,8 @@ function MainApp() {
         }}
       />
       <Tab.Screen
-        name="NotifScreen"
-        component={NotifScreen}
+        name="Profile"
+        component={Profile}
         options={{
           tabBarLabel: 'Profile',
           tabBarIcon: ({ focused, color }) => (
@@ -128,6 +129,18 @@ const Router = () => {
       <Stack.Screen
         name="AddFood"
         component={AddFoodForm}
+        options={{
+          headerShown: false,
+          animationEnabled: true,
+          animationTypeForReplace: 'pop',
+          gestureEnabled: true,
+          gestureDirection: 'horizontal',
+          ...TransitionPresets.SlideFromRightIOS,
+        }}
+      />
+      <Stack.Screen
+        name="EditDestination"
+        component={EditDestinationForm}
         options={{
           headerShown: false,
           animationEnabled: true,
