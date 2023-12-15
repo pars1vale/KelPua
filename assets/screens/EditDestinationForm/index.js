@@ -8,13 +8,21 @@ import {
     ScrollView,
     ActivityIndicator,
 } from 'react-native';
-import { ArrowLeft2 } from 'iconsax-react-native';
 import { useNavigation } from '@react-navigation/native';
 import theme, { COLORS } from '../../constant';
 import { categories } from '../../constant';
 import axios from 'axios';
+import { ArrowLeft2, AddSquare, Add } from 'iconsax-react-native';
+import FastImage from 'react-native-fast-image';
+import ImagePicker from 'react-native-image-crop-picker';
+import storage from '@react-native-firebase/storage';
+import firestore from '@react-native-firebase/firestore';
 
 const EditDestinationForm = ({ route }) => {
+    const [image, setImage] = useState(null);
+    const [oldImage, setOldImage] = useState(null);
+    const navigation = useNavigation();
+    const [loading, setLoading] = useState(true);
     const { destiatnionId } = route.params;
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [destinationData, setDestinationData] = useState({
@@ -33,68 +41,89 @@ const EditDestinationForm = ({ route }) => {
             [key]: value,
         });
     };
-    const [image, setImage] = useState(null);
-    const navigation = useNavigation();
-    const [loading, setLoading] = useState(true);
     useEffect(() => {
-        getDestinationById();
-    }, [destiatnionId]);
+        const subscriber = firestore()
+            .collection('blog')//lupa ganti
+            .doc(destiatnionId)
+            .onSnapshot(documentSnapshot => {
+                const destinationData = documentSnapshot.data();
+                if (destinationData) {
+                    console.log('Destination data: ', destinationData);
 
-    const getDestinationById = async () => {
-        try {
-            const response = await axios.get(
-                `https://6571dd06d61ba6fcc013cf5b.mockapi.io/kelpua/Destination/${destiatnionId}`,
-            );
+                    const menuCategories = destinationData.categories || [];
 
-            const destinationCategories = response.data.categories || [];
-
-            setDestinationData({
-                name: response.data.name,
-                location: response.dat.location,
-                titleDetail: response.data.titleDetail,
-                description: response.data.description,
-                categories: response.data.categories,
-                rating: response.data.rating,
-                likes: response.data.likes,
-                views: response.data.views,
-
-            });
-            setSelectedCategories(destinationCategories);
-            setImage(response.data.image);
-            setLoading(false);
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-    const handleUpdate = async () => {
-        setLoading(true);
-        try {
-            await axios
-                .put(
-                    `https://6571dd06d61ba6fcc013cf5b.mockapi.io/kelpua/Destination/${destiatnionId}`,
-                    {
+                    setMenuData({
                         name: destinationData.name,
                         location: destinationData.location,
-                        titleDetail: destinationData.itleDetail,
-                        description: destinationData.description,
+                        titleDetail: destinationData.titleDetail,
+                        description: destinationData.titleDetail,
                         categories: destinationData.categories,
                         rating: destinationData.rating,
                         likes: destinationData.likes,
                         views: destinationData.views,
-                        image,
-                    },
-                )
-                .then(function (response) {
-                    console.log(response);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
+                    });
+                    setSelectedCategories(menuCategories);
+                    setOldImage(destinationData.image);
+                    setImage(destinationData.image);
+                    setLoading(false);
+                } else {
+                    console.log(`Destination with ID ${destiatnionId} not found.`);
+                }
+            });
+        setLoading(false);
+        return () => subscriber();
+    }, [menuId]);
+
+    const handleImagePick = async () => {
+        ImagePicker.openPicker({
+            width: 1920,
+            height: 1080,
+            cropping: true,
+        })
+            .then(image => {
+                console.log(image);
+                setImage(image.path);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    };
+
+    const handleUpdate = async () => {
+        setLoading(true);
+        let filename = image.substring(image.lastIndexOf('/') + 1);
+        const extension = filename.split('.').pop();
+        const name = filename.split('.').slice(0, -1).join('.');
+        filename = name + Date.now() + '.' + extension;
+        const reference = storage().ref(`menuimages/${filename}`);
+        try {
+            if (image !== oldImage && oldImage) {
+                const oldImageRef = storage().refFromURL(oldImage);
+                await oldImageRef.delete();
+            }
+            if (image !== oldImage) {
+                await reference.putFile(image);
+            }
+            const url =
+                image !== oldImage ? await reference.getDownloadURL() : oldImage;
+            await firestore().collection('blog').doc(destiatnionId).update({//lupa ganti nama collection
+                name: destinationData.name,
+                description: destinationData.description,
+                comDescription: destinationData.comDescription,
+                categories: selectedCategories,
+                rating: destinationData.rating,
+                price: destinationData.price,
+                calories: destinationData.calories,
+                duration: destinationData.duration,
+                isFavorite: destinationData.isFavorite,
+                image: url,
+            });
             setLoading(false);
-            navigation.navigate('Homepage');
-        } catch (e) {
-            console.log(e);
+            console.log('Destination Updated!');
+            navigation.navigate('DestinationDetail', { destiatnionId });
+        } catch (error) {
+            console.error('Error updating Destination:', error);
+            console.log('Destination data: ', destinationData);
         }
     };
 
@@ -140,7 +169,7 @@ const EditDestinationForm = ({ route }) => {
                 <View style={textInput.borderDashed}>
                     <TextInput
                         placeholder="Name"
-                        value={menuData.name}
+                        value={destinationData.name}
                         onChangeText={text => handleChange('name', text)}
                         placeholderTextColor={COLORS.gray2}
                         multiline
@@ -150,9 +179,20 @@ const EditDestinationForm = ({ route }) => {
                 </View>
                 <View style={textInput.borderDashed}>
                     <TextInput
-                        placeholder="Short description"
-                        value={menuData.description}
-                        onChangeText={text => handleChange('description', text)}
+                        placeholder="location"
+                        value={destinationData.location}
+                        onChangeText={text => handleChange('location', text)}
+                        placeholderTextColor={COLORS.gray2}
+                        multiline
+                        style={textInput.content}
+                        cursorColor={COLORS.primary}
+                    />
+                </View>
+                <View style={textInput.borderDashed}>
+                    <TextInput
+                        placeholder="Title Detail"
+                        value={destinationData.titleDetail}
+                        onChangeText={text => handleChange('titleDetail', text)}
                         placeholderTextColor={COLORS.gray2}
                         multiline
                         style={textInput.content}
@@ -162,8 +202,8 @@ const EditDestinationForm = ({ route }) => {
                 <View style={[textInput.borderDashed, { minHeight: 250 }]}>
                     <TextInput
                         placeholder="Description"
-                        value={menuData.comDescription}
-                        onChangeText={text => handleChange('comDescription', text)}
+                        value={destinationData.description}
+                        onChangeText={text => handleChange('description', text)}
                         placeholderTextColor={COLORS.gray2}
                         multiline
                         style={textInput.content}
@@ -173,7 +213,7 @@ const EditDestinationForm = ({ route }) => {
                 <View style={textInput.borderDashed}>
                     <TextInput
                         placeholder="Rating"
-                        value={menuData.rating}
+                        value={destinationData.rating}
                         onChangeText={text => handleChange('rating', text)}
                         placeholderTextColor={COLORS.gray2}
                         multiline
@@ -183,9 +223,9 @@ const EditDestinationForm = ({ route }) => {
                 </View>
                 <View style={textInput.borderDashed}>
                     <TextInput
-                        placeholder="Price"
-                        value={menuData.price}
-                        onChangeText={text => handleChange('price', text)}
+                        placeholder="Likes"
+                        value={destinationData.likes}
+                        onChangeText={text => handleChange('likes', text)}
                         placeholderTextColor={COLORS.gray2}
                         multiline
                         style={textInput.content}
@@ -194,20 +234,9 @@ const EditDestinationForm = ({ route }) => {
                 </View>
                 <View style={textInput.borderDashed}>
                     <TextInput
-                        placeholder="Calories"
-                        value={menuData.calories}
-                        onChangeText={text => handleChange('calories', text)}
-                        placeholderTextColor={COLORS.gray2}
-                        multiline
-                        style={textInput.content}
-                        cursorColor={COLORS.primary}
-                    />
-                </View>
-                <View style={textInput.borderDashed}>
-                    <TextInput
-                        placeholder="Duration"
-                        value={menuData.duration}
-                        onChangeText={text => handleChange('duration', text)}
+                        placeholder="Views"
+                        value={destinationData.views}
+                        onChangeText={text => handleChange('views', text)}
                         placeholderTextColor={COLORS.gray2}
                         multiline
                         style={textInput.content}

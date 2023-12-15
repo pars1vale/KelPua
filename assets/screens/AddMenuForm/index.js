@@ -6,12 +6,17 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
-import { ArrowLeft2 } from 'iconsax-react-native';
+import { ArrowLeft2, AddSquare, Add } from 'iconsax-react-native';
+import FastImage from 'react-native-fast-image';
 import { useNavigation } from '@react-navigation/native';
 import theme, { COLORS, SIZES, FONTS } from '../../constant';
 import { categories } from '../../constant';
 import axios from 'axios';
+import ImagePicker from 'react-native-image-crop-picker';
+import storage from '@react-native-firebase/storage';
+import firestore from '@react-native-firebase/firestore';
 
 const AddFoodForm = () => {
   const [loading, setLoading] = useState(false);
@@ -54,30 +59,48 @@ const AddFoodForm = () => {
   };
 
   const handleUpload = async () => {
+    let filename = image.substring(image.lastIndexOf('/') + 1);
+    const extension = filename.split('.').pop();
+    const name = filename.split('.').slice(0, -1).join('.');
+    filename = name + Date.now() + '.' + extension;
+    const reference = storage().ref(`destinationimages/${filename}`);
+
     setLoading(true);
     try {
-      await axios.post('https://6571dd06d61ba6fcc013cf5b.mockapi.io/kelpua/Destination', {
+      await reference.putFile(image);
+      const url = await reference.getDownloadURL();
+      await firestore().collection('blog').add({
         name: destinationData.name,
         location: destinationData.location,
         titleDetail: destinationData.titleDetail,
-        description: destinationData.description,
+        description: destinationData.titleDetail,
         categories: destinationData.categories,
         rating: destinationData.rating,
         likes: destinationData.likes,
         views: destinationData.views,
-        image,
-      })
-        .then(function (response) {
-          console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+        image: url,
+      });
       setLoading(false);
+      console.log('Destination added!');
       navigation.navigate('Profile');
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.log(error);
     }
+  };
+
+  const handleImagePick = async () => {
+    ImagePicker.openPicker({
+      width: 1920,
+      height: 1080,
+      cropping: true,
+    })
+      .then(image => {
+        console.log(image);
+        setImage(image.path);
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
   return (
@@ -90,6 +113,11 @@ const AddFoodForm = () => {
           <Text style={styles.title}>Create New Destination</Text>
         </View>
       </View>
+      {loading && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color={COLORS.primary} />
+        </View>
+      )}
       <ScrollView
         contentContainerStyle={{
           paddingHorizontal: 24,
@@ -173,16 +201,58 @@ const AddFoodForm = () => {
             cursorColor={COLORS.primary}
           />
         </View>
-        <View style={[textInput.borderDashed]}>
-          <TextInput
-            placeholder="Image"
-            value={image}
-            onChangeText={text => setImage(text)}
-            placeholderTextColor={COLORS.gray2}
-            style={textInput.content}
-            cursorColor={COLORS.primary}
-          />
-        </View>
+        {image ? (
+          <View style={{ position: 'relative' }}>
+            <FastImage
+              style={{ width: '100%', height: 127, borderRadius: 5 }}
+              source={{
+                uri: image,
+                headers: { Authorization: 'someAuthToken' },
+                priority: FastImage.priority.high,
+              }}
+              resizeMode={FastImage.resizeMode.cover}
+            />
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                top: -5,
+                right: -5,
+                backgroundColor: COLORS.primary,
+                borderRadius: 25,
+              }}
+              onPress={() => setImage(null)}>
+              <Add
+                size={20}
+                variant="Linear"
+                color={COLORS.white}
+                style={{ transform: [{ rotate: '45deg' }] }}
+              />
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity onPress={handleImagePick}>
+            <View
+              style={[
+                textInput.borderDashed,
+                {
+                  gap: 10,
+                  paddingVertical: 30,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                },
+              ]}>
+              <AddSquare color={COLORS.gray2} variant="Linear" size={32} />
+              <Text
+                style={{
+                  fontFamily: 'Poppins-Regular',
+                  fontSize: 12,
+                  color: COLORS.gray2,
+                }}>
+                Upload Image
+              </Text>
+            </View>
+          </TouchableOpacity>
+        )}
         <View style={[textInput.borderDashed]}>
           <Text
             style={{

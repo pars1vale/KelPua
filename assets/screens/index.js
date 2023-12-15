@@ -6,7 +6,9 @@ import Profile from './Profile';
 import Search from './Search';
 import AddFoodForm from './AddMenuForm';
 import EditDestinationForm from './EditDestinationForm';
-
+import SplashScreen from './SplashScreen';
+import Register from './Register';
+import Login from './Login';
 export {
   Homepage,
   DestinationDetail,
@@ -16,4 +18,7 @@ export {
   Search,
   AddFoodForm,
   EditDestinationForm,
+  SplashScreen,
+  Login,
+  Register,
 };

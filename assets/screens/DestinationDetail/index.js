@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Image,
   ScrollView,
@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {
@@ -15,14 +16,76 @@ import {
   Eye,
   Like,
   Add,
+  Edit,
 } from 'iconsax-react-native';
-import theme, { COLORS, SIZES, FONTS, destinationList } from '../../constant';
 import { find } from 'lodash';
+import axios from 'axios';
+import FastImage from 'react-native-fast-image';
+import theme, { COLORS, SIZES, FONTS } from '../../constant';
+import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
+import ActionSheet from 'react-native-actions-sheet';
 
 const DestinationDetail = ({ route }) => {
   const { destinationId } = route.params;
-  const selectedDestination = destinationList.find(destination => destination.id === destinationId)
+  const [selectedDestination, setSelectedDestination] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
+
+  const actionSheetRef = useRef(null);
+
+  const openActionSheet = () => {
+    actionSheetRef.current?.show();
+  };
+  const closeActionSheet = () => {
+    actionSheetRef.current?.hide();
+  };
+
+  useEffect(() => {
+    const subscriber = firestore()
+      .collection('blog')
+      .doc(destinationId)
+      .onSnapshot(documentSnapshot => {
+        const destinationData = documentSnapshot.data();
+        if (destinationData) {
+          console.log('Destination data: ', destinationData);
+          setSelectedDestination(destinationData);
+        } else {
+          console.log(`Destination with ID ${destinationId} not found.`);
+        }
+      });
+    setLoading(false);
+    return () => subscriber();
+  }, [destinationId]);
+
+  const navigateEdit = () => {
+    closeActionSheet();
+    navigation.navigate('EditDestination', { destinationId });
+  };
+
+  const handleDelete = async () => {
+    setLoading(true);
+    try {
+      await firestore()
+        .collection('blog')// lupa ganti
+        .doc(destinationId)
+        .delete()
+        .then(() => {
+          console.log('Destination deleted!');
+        });
+      if (selectedMenu?.image) {
+        const imageRef = storage().refFromURL(selectedDestination?.image);
+        await imageRef.delete();
+      }
+      console.log('Destination deleted!');
+      closeActionSheet();
+      setSelectedDestination(null);
+      setLoading(false);
+      navigation.navigate('Homepage');
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -30,14 +93,28 @@ const DestinationDetail = ({ route }) => {
       <ScrollView>
         {/* Image Detail */}
         <View style={detailPicture.Container}>
-          <Image source={{ uri: selectedDestination.image, }} style={detailPicture.image} />
+
+          {selectedDestination?.image ? (
+            <Image
+              source={{
+                uri: selectedDestination?.image,
+                headers: { Authorization: 'someAuthToken' },
+              }}
+              style={detailPicture.image}
+            />
+          ) : (
+            <View style={styles.loadingOverlay}>
+              <ActivityIndicator size="large" color={COLORS.primary} />
+            </View>
+          )}
+
         </View>
 
         {/* Information */}
         <View style={information.container}>
           <View style={information.leftContent}>
             <Location size="24" color="#697689" />
-            <Text style={information.locationText}>{selectedDestination.name}</Text>
+            <Text style={information.locationText}>{selectedDestination?.name}</Text>
           </View>
           <View style={information.rightContent}>
             <View style={information.infoItem}>
@@ -45,7 +122,7 @@ const DestinationDetail = ({ route }) => {
                 size="24"
                 color="#697689"
               />
-              <Text style={information.infoText}>{selectedDestination.views}K</Text>
+              <Text style={information.infoText}>{selectedDestination?.views}K</Text>
             </View>
             <View style={information.infoItem}>
               <Like
@@ -53,23 +130,86 @@ const DestinationDetail = ({ route }) => {
                 color="#697689"
                 variant='Bold'
               />
-              <Text style={information.infoText}>{selectedDestination.likes}k</Text>
+              <Text style={information.infoText}>{selectedDestination?.likes}k</Text>
             </View>
           </View>
         </View>
 
         {/* Description */}
         <View style={description.container}>
-          <Text style={description.title}>{selectedDestination.titleDetail}</Text>
+          <Text style={description.title}>{selectedDestination?.titleDetail}</Text>
           <Text style={description.text}>
-            {selectedDestination.description}
+            {selectedDestination?.description}
           </Text>
           <Text style={description.text}></Text>
           <Text style={description.text}>
-            {selectedDestination.description}
+            {selectedDestination?.description}
           </Text>
         </View>
       </ScrollView>
+      <TouchableOpacity style={styles.floatingButton} onPress={openActionSheet}>
+        <Edit color={COLORS.white} variant="Linear" size={20} />
+      </TouchableOpacity>
+      <ActionSheet
+        ref={actionSheetRef}
+        containerStyle={{
+          borderTopLeftRadius: 25,
+          borderTopRightRadius: 25,
+        }}
+        indicatorStyle={{
+          width: 100,
+        }}
+        gestureEnabled={true}
+        defaultOverlayOpacity={0.3}>
+        <TouchableOpacity
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingVertical: 15,
+          }}
+          onPress={navigateEdit}>
+          <Text
+            style={{
+              fontFamily: 'Poppins-Medium',
+              color: COLORS.black,
+              fontSize: 18,
+            }}>
+            Edit
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingVertical: 15,
+          }}
+          onPress={handleDelete}>
+          <Text
+            style={{
+              fontFamily: 'Poppins-Medium',
+              color: COLORS.black,
+              fontSize: 18,
+            }}>
+            Delete
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingVertical: 15,
+          }}
+          onPress={closeActionSheet}>
+          <Text
+            style={{
+              fontFamily: 'Poppins-Medium',
+              color: 'red',
+              fontSize: 18,
+            }}>
+            Cancel
+          </Text>
+        </TouchableOpacity>
+      </ActionSheet>
     </View>
   );
 };
@@ -100,6 +240,23 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
+  },
+  floatingButton: {
+    backgroundColor: COLORS.primary,
+    padding: 15,
+    position: 'absolute',
+    bottom: 50,
+    right: 24,
+    borderRadius: 10,
+    shadowColor: COLORS.primary,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+
+    elevation: 8,
   },
 });
 

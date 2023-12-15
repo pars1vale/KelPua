@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "377227454958",
+    "project_id": "kelpuaapp",
+    "storage_bucket": "kelpuaapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:377227454958:android:e22c827dd1650a79c006ff",
+        "android_client_info": {
+          "package_name": "com.kelpua"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSqizmZTY08hfZ-k_EvEmS0IFkesZcS8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

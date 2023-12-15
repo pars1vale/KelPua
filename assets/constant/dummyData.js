@@ -95,6 +95,21 @@ export const destinationList = [
     image:
       'https://images.unsplash.com/photo-1509233725247-49e657c54213?q=80&w=1949&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   },
+  {
+    id: 4,
+    name: 'Danau Love',
+    location: 'Jayapura, Papua',
+    titleDetail: 'Holiday on best Lake In Jayapura',
+    description:
+      'Ayam Bakar Madu adalah makanan olahan yang berasal dari bahan utama berupa ayam yang dibakar dengan bumbu madu.',
+    categories: [1, 3],
+    rating: 4.3,
+    likes: 90,
+    views: 200,
+    isFavorite: true,
+    image:
+      'https://images.unsplash.com/photo-1513603915420-ce59d10a9f3b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGxvdmUlMjBsYWtlfGVufDB8fDB8fHww',
+  },
 
 ];
 

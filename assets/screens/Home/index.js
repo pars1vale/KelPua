@@ -1,4 +1,4 @@
-import React, { useState, useCallback, } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   FlatList,
   Image,
@@ -11,6 +11,7 @@ import {
   View,
   TextInput,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import {
@@ -25,9 +26,9 @@ import {
   SearchNormal,
 } from 'iconsax-react-native';
 import theme, { COLORS, SIZES, FONTS } from '../../constant';
-import { categoryList, menuList } from '../../constant';
+import { categoryList } from '../../constant';
 import { destinationList } from '../../constant/dummyData';
-import axios from 'axios';
+import firestore from '@react-native-firebase/firestore';
 
 
 export default function Homepage() {
@@ -89,31 +90,44 @@ const Content = () => {
   const [loading, setLoading] = useState(true);
   const [destinationData, setDestinationData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-  const getDataDestination = async () => {
-    try {
-      const response = await axios.get(
-        'https://6571dd06d61ba6fcc013cf5b.mockapi.io/kelpua/Destination',
-      );
-      setDestinationData(response.data);
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+
+  useEffect(() => {
+    const subscriber = firestore()
+      .collection('menu')
+      .onSnapshot(querySnapshot => {
+        const menus = [];
+        querySnapshot.forEach(documentSnapshot => {
+          menus.push({
+            ...documentSnapshot.data(),
+            id: documentSnapshot.id,
+          });
+        });
+        setDestinationData(menus);
+        setLoading(false);
+      });
+    return () => subscriber();
+  }, []);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
-      getDataDestination();
+      firestore()
+        .collection('blog')//lupa ganti
+        .onSnapshot(querySnapshot => {
+          const destinations = [];
+          querySnapshot.forEach(documentSnapshot => {
+            destinations.push({
+              ...documentSnapshot.data(),
+              id: documentSnapshot.id,
+            });
+          });
+          setDestinationData(destinations);
+        });
       setRefreshing(false);
     }, 1500);
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      getDataDestination();
-    }, []),
-  );
+
   return (
     <View>
 
@@ -122,7 +136,7 @@ const Content = () => {
       </View>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false}
-      // refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
         {destinationList.map(item => (
           <CardDestination key={item.id} item={item} />
